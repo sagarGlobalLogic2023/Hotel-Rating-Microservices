@@ -10,6 +10,7 @@
     <description>hotel-rating-app</description>
     <modules>
         <module>user-service</module>
+        <module>hotel-service</module>
     </modules>
     <properties>
         <java.version>17</java.version>
