@@ -12,6 +12,7 @@
         <module>user-service</module>
         <module>hotel-service</module>
         <module>rating-service</module>
+        <module>service-registry</module>
     </modules>
     <properties>
         <java.version>17</java.version>
