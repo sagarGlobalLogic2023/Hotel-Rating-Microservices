@@ -1,5 +1,6 @@
 package com.rating.user.service.impl;
 
+import com.rating.user.client.HotelService;
 import com.rating.user.entity.Hotel;
 import com.rating.user.entity.Rating;
 import com.rating.user.entity.User;
@@ -11,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -20,11 +20,13 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
+    private final HotelService hotelService;
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RestTemplate restTemplate) {
+    public UserServiceImpl(UserRepository userRepository, RestTemplate restTemplate, HotelService hotelService) {
         this.userRepository = userRepository;
         this.restTemplate = restTemplate;
+        this.hotelService = hotelService;
     }
 
     @Override
@@ -46,9 +48,9 @@ public class UserServiceImpl implements UserService {
         Rating[] ratingsResponse = restTemplate.getForObject("http://RATING-SERVICE/api/v1/ratings/users/" + user.getId(), Rating[].class);
         List<Rating> ratings = Arrays.stream(ratingsResponse).toList();
         List<Rating> ratingList = ratings.stream().map(rating -> {
-           // api call to hotel service to get the hotel
-            ResponseEntity<Hotel> forEntity = restTemplate.getForEntity("http://HOTEL-SERVICE/api/v1/hotels/" + rating.getHotelId(), Hotel.class);
-            Hotel hotel = forEntity.getBody();
+            // api call to hotel service to get the hotel
+
+            Hotel hotel = hotelService.getHotel(rating.getHotelId());
             rating.setHotel(hotel);
             return rating;
 
