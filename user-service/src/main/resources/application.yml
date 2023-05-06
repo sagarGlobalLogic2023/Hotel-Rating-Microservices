@@ -8,6 +8,25 @@ spring:
   config:
     import: optional:configserver:http://localhost:8086
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-91659780.okta.com/oauth2/default
+
+      client:
+        registration:
+          my-internal-client:
+            provider: okta
+            authorization-grant-type: client_credentials
+            scope: internal
+            client-id: 0oa9f5e7uwbAHdLhQ5d7
+            client-secret: MC3--nP2zhe__vCMxubuGKMvc7GqD-lz6RQiYDmp
+
+        provider:
+          okta:
+            issuer-uri: https://dev-91659780.okta.com/oauth2/default
+
   datasource:
     url: jdbc:mysql://localhost:3306/hotel_rating
     username: root
@@ -55,16 +74,12 @@ resilience4j:
       userRateLimiter:
         limit-refresh-period: 4s
         limit-for-period: 2
-        timeout-duration: 0s
+        timeout-duration: 2s
 
 
+okta:
+  oauth2:
+    issuer: https://dev-91659780.okta.com/oauth2/default
+    audience: api://default
 
 
-#eureka:
-#  instance:
-#    prefer-ip-address: true
-#  client:
-#    fetch-registry: true
-#    register-with-eureka: true
-#    service-url:
-#      defaultZone: http://localhost:8761/eureka
