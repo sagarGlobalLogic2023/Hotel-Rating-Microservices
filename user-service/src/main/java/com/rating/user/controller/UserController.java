@@ -2,6 +2,7 @@ package com.rating.user.controller;
 
 import com.rating.user.entity.User;
 import com.rating.user.service.UserService;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +28,20 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
+    @CircuitBreaker(name = "ratingHotelBreaker", fallbackMethod = "ratingHotelFallback")
     public ResponseEntity<User> getSingleUser(@PathVariable String id) {
         User user = userService.getUser(id);
+        return ResponseEntity.ok(user);
+    }
+
+    public ResponseEntity<User> ratingHotelFallback(String id, Exception exception) {
+        exception.printStackTrace();
+        User user = User.builder()
+                .email("sagar@gmail.com")
+                .firstname("sagar")
+                .lastname("gupta")
+                .id("12345")
+                .build();
         return ResponseEntity.ok(user);
     }
 
